@@ -8,7 +8,7 @@ This is a web application for transgender individuals to provide helpful auditor
   - [Technology Stack](#technology-stack)
   - [Install](#install)
     - [First time setup:](#first-time-setup)
-  - [Verify whether the database was created successfully](#verify-whether-the-database-was-created-successfully)
+  - [Verification](#verification)
   - [.env](#env)
   - [Starting on localhost 8080](#starting-on-localhost-8080)
     - [For macs:](#for-macs)
@@ -35,6 +35,11 @@ npm run seed
 ```
 
 ### First time setup:
+0. (Optional) Create venv as needed
+```
+python3.9 -m venv .venv
+source .venv/bin/activate
+``` 
 1. Install/Switch to Node Version 12.11.1
 ```
 nvm install 12.11.1
@@ -58,7 +63,8 @@ postgres=# \l
 
 5. Run ```npm seed``` in a separate terminal.
 
-## Verify whether the database was created successfully
+## Verification
+1. whether the database was created successfully
 In users database, you should see at least one user with their encrypted password. <br/>
 
 ```psql -d attuned``` (or if you kept the previous terminal open, you can run: ```\c attuned``` to switch to the database.)<br/>
@@ -76,7 +82,11 @@ attuned=# \dt
 - ```\q``` to exit psql<br/>
 - ```brew services stop postgresql``` to stop the postgres server<br/>
 
-
+2. whether the python code is running correctly
+In root dir, run:
+```python gendervoicemodel/test.py --file "gendervoicemodel/test-samples/user-1-recording-7.wav"``
+The output should be:
+```{"mp": 2.39 , "fp": 97.61 }```
 
 ## .env
 Create ```secrets.js``` file in the root directory and add the environment variables below:
@@ -91,7 +101,7 @@ process.env.S3_BUCKET = 'keep these secret';
 ## Starting on localhost 8080
 **TEST USER: ```test@email.com``` password: ```123```**
 ### For macs:
-```npm start```
+```npm run start-dev```
 
 ### For windows (in 2 terminals):
 ```

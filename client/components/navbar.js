@@ -10,7 +10,7 @@ const Navbar = () => (
       <AppBar position="fixed">
         <div className="Menu">
           <div className="title">
-            <Link to="/home"  id="logolink"><img src="wavelogo.png" id="wavelogo"/><Typography variant="h4" id="visivoxtitle">VisiVox</Typography> </Link>
+            <Link to="/home"  id="logolink"><img src="wavelogo.png" id="wavelogo"/><Typography variant="h4" id="attunedtitle">Attuned</Typography> </Link>
           </div>
           <div>
             <MenuBar />

@@ -1,4 +1,4 @@
-# import pyaudio
+import pyaudio
 import os
 import wave
 import librosa
@@ -7,10 +7,12 @@ from sys import byteorder
 from array import array
 from struct import pack
 import asyncio
+import warnings
+warnings.filterwarnings("ignore")
 
 THRESHOLD = 500
 CHUNK_SIZE = 1024
-# FORMAT = pyaudio.paInt16
+FORMAT = pyaudio.paInt16
 RATE = 16000
 
 SILENCE = 30
@@ -69,10 +71,10 @@ def record():
     blank sound to make sure VLC et al can play
     it without getting chopped off.
     """
-    # p = pyaudio.PyAudio()
-    # stream = p.open(format=FORMAT, channels=1, rate=RATE,
-    #     input=True, output=True,
-    #     frames_per_buffer=CHUNK_SIZE)
+    p = pyaudio.PyAudio()
+    stream = p.open(format=FORMAT, channels=1, rate=RATE,
+        input=True, output=True,
+        frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0
     snd_started = False
@@ -148,7 +150,7 @@ def extract_feature(file_name, **kwargs):
         chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T,axis=0)
         result = np.hstack((result, chroma))
     if mel:
-        mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T,axis=0)
+        mel = np.mean(librosa.feature.melspectrogram(y=X, sr=sample_rate).T,axis=0)
         result = np.hstack((result, mel))
     if contrast:
         contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T,axis=0)
@@ -173,6 +175,8 @@ if __name__ == "__main__":
     # construct the model
     model = create_model()
     # load the saved/trained weights
+    # print('getcwd', os.getcwd())
+    # model.load_weights("results/model.h5")
     model.load_weights(os.path.join(os.getcwd(),"gendervoicemodel/results/model.h5"))
     # if not file or not os.path.isfile(file):
     #     # if file not provided, or it doesn't exist, use your voice
@@ -184,7 +188,7 @@ if __name__ == "__main__":
     # # extract features and reshape it
     features = extract_feature(file, mel=True).reshape(1, -1)
     # predict the gender!
-    male_prob = model.predict(features)[0][0]
+    male_prob = model.predict(features, verbose = 0)[0][0]
     female_prob = 1 - male_prob
     gender = "male" if male_prob > female_prob else "female"
     # show the result!
